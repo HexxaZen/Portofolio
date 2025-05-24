@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dwi Agus Wibisana - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --primary-light: #93c5fd;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
+        }
+        
+        .project-card {
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+            transform-style: preserve-3d;
+        }
+        
+        .project-card:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.03);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .skill-bar {
+            transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.4s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.2) 0%, rgba(29, 78, 216, 0.2) 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: morph 15s ease-in-out infinite;
+            filter: blur(30px);
+            z-index: 0;
+        }
+        
+        @keyframes morph {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 25% 75% / 54% 73% 27% 46%; }
+            100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        }
+        
+        .timeline-dot {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+            transform-origin: left center;
+        }
+        
+        .input-field:focus {
+            transform: scaleX(1.01);
+            box-shadow: 0 5px 15px -5px rgba(59, 130, 246, 0.5);
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+            transform: scale(1);
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.1) translateY(-3px);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-content {
+                text-align: center;
+            }
+            
+            .about-img {
+                margin-bottom: 2rem;
+            }
+            
+            .timeline-dot {
+                display: none;
+            }
+            
+            .experience-item {
+                padding-left: 0;
+                padding-right: 0;
+                text-align: center;
+            }
+            
+            .blob {
+                width: 300px;
+                height: 300px;
+            }
+        }
+        
+        /* Loading animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader-inner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--primary-light);
+            border-top-color: var(--primary-dark);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Particle animation */
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 relative overflow-x-hidden">
+    <!-- Loading Screen -->
+    <div class="loader">
+        <div class="loader-inner"></div>
+    </div>
+    
+    <!-- Background Blobs -->
+    <div class="blob top-0 -right-64 -z-10"></div>
+    <div class="blob bottom-0 -left-64 -z-10"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white shadow-md z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-xl font-bold text-blue-600 hover:text-blue-800 transition-colors duration-300">WBSN</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2">Home</a>
+                        <a href="#about" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2">About</a>
+                        <a href="#skills" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2">Skills</a>
+                        <a href="#experience" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2">Experience</a>
+                        <a href="#projects" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2">Projects</a>
+                        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2">Contact</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-gray-700 hover:text-blue-600 focus:outline-none transition-colors duration-300">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg transition-all duration-300 origin-top">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-300">Home</a>
+                <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-300">About</a>
+                <a href="#skills" class="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-300">Skills</a>
+                <a href="#experience" class="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-300">Experience</a>
+                <a href="#projects" class="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-300">Projects</a>
+                <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-300">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg text-white pt-32 pb-20 md:pt-40 md:pb-28 relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col md:flex-row items-center hero-content">
+                <div class="md:w-1/2 mb-10 md:mb-0" data-aos="fade-right" data-aos-duration="800">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Hi, I'm <span class="text-blue-300">Dwi Agus Wibisana</span></h1>
+                    <h2 class="text-2xl md:text-3xl font-semibold mb-6">IT Support & Web Developer</h2>
+                    <p class="text-lg mb-8 text-blue-100 max-w-lg">
+                        Passionate IT professional with experience in technical support, web development, and system administration.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#contact" class="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 text-center">
+                            Contact Me
+                        </a>
+                        <a href="#projects" class="border border-white text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 text-center">
+                            View Projects
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+                    <div class="relative w-64 h-64 md:w-80 md:h-80">
+                        <div class="absolute inset-0 bg-blue-400 rounded-full opacity-20 animate-pulse"></div>
+                        <div class="absolute inset-4 bg-blue-500 rounded-full opacity-20 animate-pulse delay-75"></div>
+                        <img src="asset/1.JPG" 
+                             alt="Dwi Agus Wibisana" 
+                             class="relative w-full h-full rounded-full object-cover border-4 border-white shadow-xl animate-float">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">About Me</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/3 mb-10 md:mb-0 flex justify-center about-img" data-aos="fade-right">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-blue-100 rounded-full opacity-75 -z-10 animate-pulse"></div>
+                        <img src="asset/2.JPG" 
+                             alt="Dwi Agus Wibisana" 
+                             class="w-64 h-64 rounded-full object-cover border-4 border-blue-100 shadow-lg transform transition-all duration-500 hover:rotate-3 hover:scale-105">
+                    </div>
+                </div>
+                <div class="md:w-2/3 md:pl-12" data-aos="fade-left" data-aos-delay="200">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6">Who am I?</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Mahasiswa semester akhir Universitas Muria Kudus dengan pengalaman kerja di industri F&B sejak SMK. Memiliki ketertarikan pada sistem informasi dan pernah mengembangkan sistem inventaris MERRACOTA untuk Merra Coffee Kudus sebagai bagian dari proyek kerja sambil kuliah. Terbiasa bekerja secara profesional di lingkungan operasional dan teknologi.
+                    </p>
+                    <br>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div class="flex items-center bg-blue-50 p-3 rounded-lg transition-all duration-300 hover:bg-blue-100">
+                            <span class="text-blue-600 mr-3 text-xl"><i class="fas fa-user-graduate"></i></span>
+                            <span class="text-gray-700">Student at Universitas Muria Kudus</span>
+                        </div>
+                        <div class="flex items-center bg-blue-50 p-3 rounded-lg transition-all duration-300 hover:bg-blue-100">
+                            <span class="text-blue-600 mr-3 text-xl"><i class="fas fa-map-marker-alt"></i></span>
+                            <span class="text-gray-700">Kudus, Indonesia</span>
+                        </div>
+                        <div class="flex items-center bg-blue-50 p-3 rounded-lg transition-all duration-300 hover:bg-blue-100">
+                            <span class="text-blue-600 mr-3 text-xl"><i class="fas fa-envelope"></i></span>
+                            <span class="text-gray-700">dwiaguswibisonoblora@gmail.com</span>
+                        </div>
+                        <div class="flex items-center bg-blue-50 p-3 rounded-lg transition-all duration-300 hover:bg-blue-100">
+                            <span class="text-blue-600 mr-3 text-xl"><i class="fas fa-phone"></i></span>
+                            <span class="text-gray-700">+62 857-0049-8174</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="https://www.linkedin.com/in/dwi-agus-wibisana-263a812a0/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                            <i class="fab fa-linkedin-in mr-2"></i> LinkedIn
+                        </a>
+                        <a href="https://github.com/HexxaZen" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                            <i class="fab fa-github mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">My Skills</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12" data-aos="fade-up" data-aos-delay="100">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Technical Skills</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">IT Support</span>
+                                <span class="text-gray-500">90%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">HTML/CSS</span>
+                                <span class="text-gray-500">85%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">JavaScript</span>
+                                <span class="text-gray-500">75%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">PHP</span>
+                                <span class="text-gray-500">70%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 70%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Professional Skills</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">Problem Solving</span>
+                                <span class="text-gray-500">95%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">Teamwork</span>
+                                <span class="text-gray-500">90%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">Communication</span>
+                                <span class="text-gray-500">85%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700">Time Management</span>
+                                <span class="text-gray-500">80%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="skill-bar bg-blue-600 h-2.5 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-16" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="text-xl font-semibold text-gray-800 mb-8 text-center">Tools & Technologies</h3>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fab fa-html5 text-4xl text-orange-500 mb-2"></i>
+                        <span class="text-sm text-gray-700">HTML5</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fab fa-css3-alt text-4xl text-blue-500 mb-2"></i>
+                        <span class="text-sm text-gray-700">CSS3</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fab fa-js text-4xl text-yellow-500 mb-2"></i>
+                        <span class="text-sm text-gray-700">JavaScript</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fab fa-php text-4xl text-purple-500 mb-2"></i>
+                        <span class="text-sm text-gray-700">PHP</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fas fa-database text-4xl text-blue-400 mb-2"></i>
+                        <span class="text-sm text-gray-700">MySQL</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fab fa-git-alt text-4xl text-orange-600 mb-2"></i>
+                        <span class="text-sm text-gray-700">Git</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fab fa-windows text-4xl text-blue-600 mb-2"></i>
+                        <span class="text-sm text-gray-700">Windows</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 w-24">
+                        <i class="fab fa-apple text-4xl text-black mb-2"></i>
+                        <span class="text-sm text-gray-700">Mac</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Work Experience</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="relative" data-aos="fade-up" data-aos-delay="100">
+                <!-- Timeline line -->
+                <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-gray-200 transform -translate-x-1/2"></div>
+                
+                <!-- Timeline items -->
+                <div class="space-y-8 md:space-y-16">
+                    <!-- Experience 1 -->
+                    <div class="relative flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right experience-item" data-aos="fade-right">
+                            <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                                <h3 class="text-xl font-semibold text-blue-600 mb-2">Barista & Web Dev</h3>
+                                <h4 class="text-lg font-medium text-gray-800 mb-2">Merra Coffee & Talk, Kudus</h4>
+                                <p class="text-gray-600 mb-2">November 2023 - Present</p>
+                                <p class="text-gray-700">
+                                    Membuat produk minuman dan menjaga kebersihan area Merra Coffee sesuai SOP, serta membangun dan mengembangkan
+                                    sistem pendataan bahan baku dan inventaris bernama MERRACOTA INVENTORY APP
+                                </p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 timeline-dot"></div>
+                        <div class="md:w-1/2 md:pl-12"></div>
+                    </div>
+                    
+                    <!-- Experience 2 -->
+                    <div class="relative flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-6 md:mb-0"></div>
+                        <div class="hidden md:block absolute left-1/2 timeline-dot"></div>
+                        <div class="md:w-1/2 md:pl-12 experience-item" data-aos="fade-left">
+                            <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                                <h3 class="text-xl font-semibold text-blue-600 mb-2">Company Profile of Daycomp's Team</h3>
+                                <h4 class="text-lg font-medium text-gray-800 mb-2">Daycomp Percetakan, Kudus</h4>
+                                <p class="text-gray-700">
+                                    Bekerja sama dengan tim membangun serta mengembangkan Website Company Profile Daycomp Percetakan dengan tujuan
+                                    menjangkau market yang lebih luas serta efisiensi customer untuk melihat produk Daycomp yang diinginkan.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Experience 3 -->
+                    <div class="relative flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right experience-item" data-aos="fade-right">
+                            <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                                <h3 class="text-xl font-semibold text-blue-600 mb-2">Barista & Content Creator</h3>
+                                <h4 class="text-lg font-medium text-gray-800 mb-2">Baro Cafe, Kudus</h4>
+                                <p class="text-gray-600 mb-2">2023 - 2024</p>
+                                <p class="text-gray-700">
+                                    Membuat produk minuman sesuai dengan SOP serta membuat content media sosial dengan tujuan menjangkau market customer
+                                    yang lebih luas.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 timeline-dot"></div>
+                        <div class="md:w-1/2 md:pl-12"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">My Projects</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="h-48 bg-blue-100 flex items-center justify-center relative overflow-hidden">
+                        <i class="fas fa-laptop-code text-6xl text-blue-600 z-10"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-500 to-transparent opacity-20"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Merracota Inventory App Website</h3>
+                        <p class="text-gray-600 mb-4">
+                            Sistem Pendataan bahan baku dan inventaris berbasis web dengan bahasa PHP, framework Laravel dan MySQL.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">HTML</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">CSS</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">JavaScript</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">PHP</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Laravel"></span>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">MySQL</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="https://merracota.my.id" class="text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </a>
+                            <a href="https://github.com/HexxaZen/Inventory-App" class="text-gray-600 hover:text-gray-800 transition-colors duration-300">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Get In Touch</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-8" data-aos="fade-right">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6">Informasi Kontak</h3>
+                    <p class="text-gray-600 mb-8">
+                        Jangan ragu untuk menghubungi saya jika ada pertanyaan atau peluang. Saya selalu terbuka untuk mendiskusikan proyek baru, ide kreatif, atau peluang untuk menjadi bagian dari visi anda.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start bg-blue-50 p-4 rounded-lg transition-all duration-300 hover:bg-blue-100">
+                            <div class="flex-shrink-0 bg-blue-100 p-3 rounded-full text-blue-600">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-800">Location</h4>
+                                <p class="text-gray-600">Kudus, Jawa Tengah, Indonesia</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start bg-blue-50 p-4 rounded-lg transition-all duration-300 hover:bg-blue-100">
+                            <div class="flex-shrink-0 bg-blue-100 p-3 rounded-full text-blue-600">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-800">Email</h4>
+                                <p class="text-gray-600">dwiaguswibisonoblora@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start bg-blue-50 p-4 rounded-lg transition-all duration-300 hover:bg-blue-100">
+                            <div class="flex-shrink-0 bg-blue-100 p-3 rounded-full text-blue-600">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-800">Phone</h4>
+                                <p class="text-gray-600">+62 857-0049-8174</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="text-lg font-medium text-gray-800 mb-4">Follow Me</h4>
+                        <div class="flex space-x-4">
+                            <a href="https://www.linkedin.com/in/dwi-agus-wibisana-263a812a0/" target="_blank" class="social-icon bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full transition-all duration-300">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="https://github.com/HexxaZen/" class="social-icon bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-full transition-all duration-300">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            
+                            <a href="https://www.instagram.com/wbsn.da/" class="social-icon bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-full transition-all duration-300">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left" data-aos-delay="200">
+                    <form id="whatsappForm" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                            <input type="text" id="name" name="name" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+                            <input type="email" id="email" name="email" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="subject" name="subject" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Your Message</label>
+                            <textarea id="message" name="message" rows="5" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <a href="#" class="text-xl font-bold hover:text-blue-400 transition-colors duration-300">Dwi Agus Wibisana</a>
+                    <p class="mt-2 text-gray-400">IT Support & Web Developer</p>
+                </div>
+                
+                <div class="flex flex-wrap justify-center space-x-6">
+                    <a href="#home" class="text-gray-400 hover:text-white transition-colors duration-300">Home</a>
+                    <a href="#about" class="text-gray-400 hover:text-white transition-colors duration-300">About</a>
+                    <a href="#skills" class="text-gray-400 hover:text-white transition-colors duration-300">Skills</a>
+                    <a href="#experience" class="text-gray-400 hover:text-white transition-colors duration-300">Experience</a>
+                    <a href="#projects" class="text-gray-400 hover:text-white transition-colors duration-300">Projects</a>
+                    <a href="#contact" class="text-gray-400 hover:text-white transition-colors duration-300">Contact</a>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>&copy; <span id="year"></span> Dwi Agus Wibisana. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 transform hover:scale-110">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            once: true,
+            easing: 'ease-in-out',
+        });
+        
+        // Loading screen
+        window.addEventListener('load', function() {
+            const loader = document.querySelector('.loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1000);
+            
+            // Create particles
+            createParticles();
+        });
+        
+        // Set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('animate-fadeInDown');
+        });
+        
+        // Back to top button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.remove('opacity-100', 'visible');
+                backToTopButton.classList.add('opacity-0', 'invisible');
+            }
+            
+            // Navbar shadow on scroll
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Animate skill bars on scroll
+        const skillBars = document.querySelectorAll('.skill-bar');
+        
+        function animateSkillBars() {
+            skillBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        }
+        
+        // Intersection Observer for skill bars
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateSkillBars();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        const skillsSection = document.getElementById('skills');
+        if (skillsSection) {
+            observer.observe(skillsSection);
+        }
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+        
+        // Form submission
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Simple form validation
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const message = document.getElementById('message').value;
+                
+                if (!name || !email || !message) {
+                    alert('Please fill in all required fields.');
+                    return;
+                }
+                
+                // In a real application, you would send the form data to a server here
+                alert('Thank you for your message! I will get back to you soon.');
+                form.reset();
+            });
+        }
+        
+        // Particle animation
+        function createParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.style.position = 'fixed';
+            particlesContainer.style.top = '0';
+            particlesContainer.style.left = '0';
+            particlesContainer.style.width = '100%';
+            particlesContainer.style.height = '100%';
+            particlesContainer.style.pointerEvents = 'none';
+            particlesContainer.style.zIndex = '-1';
+            document.body.appendChild(particlesContainer);
+            
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2px and 5px
+                const size = Math.random() * 3 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5;
+                
+                particlesContainer.appendChild(particle);
+                
+                // Animate particle
+                animateParticle(particle);
+            }
+        }
+        
+        function animateParticle(particle) {
+            let x = parseFloat(particle.style.left);
+            let y = parseFloat(particle.style.top);
+            
+            const speedX = (Math.random() - 0.5) * 0.2;
+            const speedY = (Math.random() - 0.5) * 0.2;
+            
+            function move() {
+                x += speedX;
+                y += speedY;
+                
+                // Wrap around edges
+                if (x > 100) x = 0;
+                if (x < 0) x = 100;
+                if (y > 100) y = 0;
+                if (y < 0) y = 100;
+                
+                particle.style.left = `${x}%`;
+                particle.style.top = `${y}%`;
+                
+                requestAnimationFrame(move);
+            }
+            
+            move();
+        }
+        
+        // Hover effect for project cards
+        const projectCards = document.querySelectorAll('.project-card');
+        projectCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const angleX = (y - centerY) / 20;
+                const angleY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale(1.03)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+            });
+        });
+        // message
+        document.getElementById("whatsappForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Ambil nilai input
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const subject = document.getElementById("subject").value.trim();
+        const message = document.getElementById("message").value.trim();
+
+        // Ganti dengan nomor WhatsApp tujuan (format internasional tanpa +)
+        const phoneNumber = "6285700498174";
+
+        // Format pesan
+        const whatsappMessage = `Halo, wibi`;
+
+        // Buat link WhatsApp
+        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+
+        // Buka di tab baru
+        window.open(whatsappURL, "_blank");
+    });
+    </script>
+</body>
+</html>

@@ -105,28 +105,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form submission
-const form = document.querySelector('form');
-if (form) {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Simple form validation
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('message').value;
-        
-        if (!name || !email || !message) {
-            alert('Please fill in all required fields.');
-            return;
-        }
-        
-        // In a real application, you would send the form data to a server here
-        alert('Thank you for your message! I will get back to you soon.');
-        form.reset();
-    });
-}
-
 // Particle animation
 function createParticles() {
     const particlesContainer = document.createElement('div');
@@ -211,25 +189,38 @@ projectCards.forEach(card => {
         card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
     });
 });
-// message
-document.getElementById("whatsappForm").addEventListener("submit", function (e) {
-e.preventDefault();
 
-// Ambil nilai input
-const name = document.getElementById("name").value.trim();
-const email = document.getElementById("email").value.trim();
-const subject = document.getElementById("subject").value.trim();
-const message = document.getElementById("message").value.trim();
+// Form submission for WhatsApp
+const whatsappForm = document.getElementById("whatsappForm");
+if (whatsappForm) {
+    whatsappForm.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-// Ganti dengan nomor WhatsApp tujuan (format internasional tanpa +)
-const phoneNumber = "6285700498174";
+        // Ambil nilai input
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const subject = document.getElementById("subject").value.trim();
+        const message = document.getElementById("message").value.trim();
 
-// Format pesan
-const whatsappMessage = `Halo, wibi`;
+        // Validasi input
+        if (!name || !email || !subject || !message) {
+            alert('Harap isi semua kolom yang diperlukan.');
+            return;
+        }
 
-// Buat link WhatsApp
-const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+        // Nomor WhatsApp tujuan (format internasional tanpa + atau spasi)
+        const phoneNumber = "6285700498174";
 
-// Buka di tab baru
-window.open(whatsappURL, "_blank");
-});
+        // Format pesan untuk WhatsApp
+        const whatsappMessage = `Halo, perkenalkan nama saya ${name}.\n\nEmail: ${email}\nSubject: ${subject}\n\nPesan:\n${message}\n\nDikirim dari website portofolio Anda.`;
+
+        // Buat URL WhatsApp
+        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+
+        // Buka WhatsApp di tab baru
+        window.open(whatsappURL, "_blank");
+
+        // Reset formulir setelah submit
+        whatsappForm.reset();
+    });
+}
